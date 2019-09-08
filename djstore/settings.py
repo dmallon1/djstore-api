@@ -70,6 +70,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djstore.wsgi.application'
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
