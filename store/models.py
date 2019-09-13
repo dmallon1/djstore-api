@@ -24,12 +24,14 @@ class ProductInstance(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     chosen_size = models.ForeignKey(ShirtSize, on_delete=models.PROTECT)
     quantity = models.PositiveIntegerField()
+    sku = models.TextField(max_length=512)
 
     def __str__(self):
         return "[" + str(self.quantity) + "] " + self.product.title + " - " + self.chosen_size.size
 
 
 class Order(models.Model):
+    email = models.EmailField()
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     address1 = models.CharField(max_length=128)
@@ -40,6 +42,7 @@ class Order(models.Model):
     card_token = models.CharField(max_length=256)
     captcha_token = models.CharField(max_length=512)
     product_instances = models.ManyToManyField(ProductInstance)
+    total = models.PositiveIntegerField()
 
     def __str__(self):
         return self.first_name + " " + self.last_name

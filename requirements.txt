@@ -2,3 +2,6 @@ django
 djangorestframework
 django-cors-headers
 uwsgi
+stripe
+uuid
+requests
