@@ -3,10 +3,10 @@ version: '3'
 services:
   web:
     build: .
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
-    container_name: djstore
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: djstore-api
     volumes:
-      - .:/djstore
+      - .:/djstore-api
     ports:
       - "8000:8000"
     environment:
