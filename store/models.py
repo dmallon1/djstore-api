@@ -50,6 +50,7 @@ class Order(models.Model):
     captcha_token = models.CharField(max_length=512)
     product_quantity_instances = models.ManyToManyField(ProductQuantityInstance)
     total = models.PositiveIntegerField()
+    stripe_id = models.CharField(max_length=128, null=True, blank=True)
     gooten_id = models.CharField(max_length=128, null=True, blank=True)
     dj_order_id = models.CharField(max_length=6, unique=True, default="yo")
 

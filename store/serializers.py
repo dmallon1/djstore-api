@@ -24,7 +24,7 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ('email', 'first_name', 'last_name', 'address1', 'address2',
             'city', 'state', 'zip', 'card_token', 'captcha_token', 'total',
-            'product_quantity_instances', 'gooten_id', 'dj_order_id')
+            'product_quantity_instances', 'stripe_id', 'gooten_id', 'dj_order_id')
 
     def create(self, validated_data):
         product_list = validated_data.pop('product_quantity_instances')

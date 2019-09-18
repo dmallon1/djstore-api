@@ -25,15 +25,18 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     def create(self, request):
         # validate captcha
 
-        # call stripe api
+        # call stripe api and update the order with the stripe id
         name = request.data['first_name'] + " " + request.data['last_name']
-        error_or_none = create_charge(request.data['total'], request.data['card_token'], name)
-        if error_or_none:
+        charge_or_exception = create_charge(request.data['total'], request.data['card_token'], name)
+        if isinstance(charge_or_exception, Exception):
             return Response({"detail":"issue with stripe"}, status=status.HTTP_400_BAD_REQUEST)
+        request.data['stripe_id'] = charge_or_exception["id"]
 
         # call gooten api and update the order with the gooten id
         resp = create_gooten_order(request.data)
         if resp.status_code is not 201:
+            # TODO I probbaly should automatically refund the person or send myself
+            # an email to take action if this ever happens
             return Response({"detail":"issue with gooten"}, status=status.HTTP_400_BAD_REQUEST)
         request.data['gooten_id'] = resp.json()['Id']
 
@@ -46,6 +49,8 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         # validate and save data if appropriate
         serializer = OrderSerializer(data=request.data)
         if not serializer.is_valid():
+            # TODO at this point too, if this fails here, we have issues
+            # need to sound an alarm
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
 
@@ -67,7 +72,7 @@ def create_charge(total, card_token, name):
     except Exception as e:
         return e
 
-    return None
+    return charge
 
 
 def create_gooten_order(data):
