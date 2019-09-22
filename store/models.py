@@ -21,7 +21,7 @@ class Product(models.Model):
 
 
 class ProductInstance(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, related_name='product_instances', on_delete=models.PROTECT)
     size = models.ForeignKey(ShirtSize, on_delete=models.PROTECT)
     sku = models.TextField(max_length=512)
 

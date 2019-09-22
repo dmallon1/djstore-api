@@ -2,15 +2,18 @@ from rest_framework import serializers
 from store.models import Product, Order, ProductQuantityInstance, ProductInstance
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = '__all__'
-
 class ProductInstanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductInstance
         fields = '__all__'
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    product_instances = ProductInstanceSerializer(many=True, read_only=True)
+    class Meta:
+        model = Product
+        fields = '__all__'
+
 
 class ProductQuantityInstanceSerializer(serializers.ModelSerializer):
     class Meta:
