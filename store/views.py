@@ -29,6 +29,7 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         name = request.data['first_name'] + " " + request.data['last_name']
         charge_or_exception = create_charge(request.data['total'], request.data['card_token'], name)
         if isinstance(charge_or_exception, Exception):
+            print(charge_or_exception) # TODO use logger instead
             return Response({"detail":"issue with stripe"}, status=status.HTTP_400_BAD_REQUEST)
         request.data['stripe_id'] = charge_or_exception["id"]
 
@@ -83,7 +84,7 @@ def create_gooten_order(data):
 
     # have to create items list to insert below
     items = []
-    for instance in data['product_quantity_instances']:
+    for instance in data['product_instances']:
         product_instance = ProductInstance.objects.get(id=instance['product_instance'])
         item = {
             "Quantity": instance['quantity'],
