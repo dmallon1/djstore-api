@@ -62,6 +62,8 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 def create_charge(total, card_token, name):
     stripe.api_key = "sk_test_iWDVTESjjHJELulceKZ22o8n00CgpRftmA"
 
+    total = round(total * 100)
+
     try:
         charge = stripe.Charge.create(
             amount=total,
@@ -85,10 +87,9 @@ def create_gooten_order(data):
     # have to create items list to insert below
     items = []
     for instance in data['product_instances']:
-        product_instance = ProductInstance.objects.get(id=instance['product_instance'])
         item = {
             "Quantity": instance['quantity'],
-            "SKU": product_instance.sku,
+            "SKU": instance['sku'],
             "ShipCarrierMethodId": 1,
         }
         items.append(item)
