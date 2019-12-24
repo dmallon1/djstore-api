@@ -8,12 +8,12 @@ import requests
 from store.utils import generate_random_six_character_string
 
 
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
-class ProductInstanceViewSet(viewsets.ModelViewSet):
+class ProductInstanceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = ProductInstance.objects.all()
     serializer_class = ProductInstanceSerializer
 
