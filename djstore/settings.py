@@ -25,7 +25,7 @@ SECRET_KEY = '3fra#tul5#+lmmpmu4c$m#_fenxbk^k-5!z5=ml))_rae7*o*o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['store.danmallon.com']
 
 
 # Application definition
