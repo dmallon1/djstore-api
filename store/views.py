@@ -23,6 +23,11 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = OrderSerializer
 
     def create(self, request):
+        # testing
+        serializer = OrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        print(serializer.validated_data, serializer.errors)
+        return Response({"detail":"123abc"}, status=200)
         # validate captcha
 
         # call stripe api and update the order with the stripe id
