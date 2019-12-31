@@ -32,6 +32,12 @@ class ProductInstance(models.Model):
 
 
 class Order(models.Model):
+    STATUS_CHOICES = [
+        ('p', 'processing'),
+        ('s', 'shipped'),
+        ('d', 'delivered'),
+    ]
+
     email = models.EmailField()
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
@@ -39,7 +45,7 @@ class Order(models.Model):
     address2 = models.CharField(max_length=128, blank=True, null=True)
     city = models.CharField(max_length=128)
     state = models.CharField(max_length=2)
-    zip = models.PositiveIntegerField()
+    zip_code = models.CharField(max_length=10)
     card_token = models.CharField(max_length=256)
     captcha_token = models.CharField(max_length=512)
     product_instances = models.ManyToManyField(ProductInstance)
@@ -47,6 +53,9 @@ class Order(models.Model):
     stripe_id = models.CharField(max_length=128, null=True, blank=True)
     gooten_id = models.CharField(max_length=128, null=True, blank=True)
     dj_order_id = models.CharField(max_length=6, unique=True, default="yo")
+
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='p')
+    tracking_number = models.CharField(max_length=64, null=True, blank=True)
 
     def __str__(self):
         return self.first_name + " " + self.last_name

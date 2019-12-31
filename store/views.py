@@ -6,6 +6,8 @@ import stripe
 import uuid
 import requests
 from store.utils import generate_random_six_character_string
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 class ProductViewSet(viewsets.ReadOnlyModelViewSet):
@@ -23,11 +25,6 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     serializer_class = OrderSerializer
 
     def create(self, request):
-        # testing
-        serializer = OrderSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data, serializer.errors)
-        return Response({"detail":"123abc"}, status=200)
         # validate captcha
 
         # call stripe api and update the order with the stripe id
@@ -43,6 +40,7 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
         if resp.status_code is not 201:
             # TODO I probbaly should automatically refund the person or send myself
             # an email to take action if this ever happens
+            print(resp.json())
             return Response({"detail":"issue with gooten"}, status=status.HTTP_400_BAD_REQUEST)
         request.data['gooten_id'] = resp.json()['Id']
 
@@ -104,11 +102,11 @@ def create_gooten_order(data):
             "FirstName": data['first_name'],
             "LastName": data['last_name'],
             "Line1": data['address1'],
-            "Line2": data['address2'],
+            "Line2": data.get('address2'),
             "City": data['city'],
             "State": data['state'],
             "CountryCode": "US",
-            "PostalCode": data['zip'],
+            "PostalCode": data['zip_code'],
             "IsBusinessAddress": False,
             "Phone": "1234567890",
             "Email": data['email']
@@ -117,11 +115,11 @@ def create_gooten_order(data):
             "FirstName": data['first_name'],
             "LastName": data['last_name'],
             "Line1": data['address1'],
-            "Line2": data['address2'],
+            "Line2": data.get('address2'),
             "City": data['city'],
             "State": data['state'],
             "CountryCode": "US",
-            "PostalCode": data['zip'],
+            "PostalCode": data['zip_code'],
             "IsBusinessAddress": False,
             "Phone": "1234567890",
             "Email": data['email']
@@ -142,3 +140,31 @@ def create_gooten_order(data):
     response = requests.post(url, json=payload, headers=headers, params=querystring)
 
     return response
+
+
+class OrderLookup(APIView):
+    """
+    View to lookup orders.
+    """
+
+    def post(self, request, format=None):
+        """
+        Returns order information.
+        """
+
+        try:
+            order = Order.objects.get(dj_order_id=request.data.get('order_id'), zip_code=request.data.get('zip_code'))
+        except Order.DoesNotExist:
+            return Response({"detail": "not found"}, status=404)
+
+        product_serializer = ProductInstanceSerializer(order.product_instances, many=True)
+
+        data = {
+            "order_id": order.dj_order_id,
+            "status": order.status,
+            "tracking_number": order.tracking_number,
+            "product_instances": product_serializer.data,
+            "total": order.total,
+        }
+
+        return Response(data)

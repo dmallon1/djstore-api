@@ -26,7 +26,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('email', 'first_name', 'last_name', 'address1', 'address2',
-            'city', 'state', 'zip', 'card_token', 'captcha_token', 'total',
+            'city', 'state', 'zip_code', 'card_token', 'captcha_token', 'total',
             'product_instances', 'stripe_id', 'gooten_id', 'dj_order_id')
 
     def create(self, validated_data):
