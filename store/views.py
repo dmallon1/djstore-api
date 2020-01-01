@@ -5,7 +5,7 @@ from rest_framework.response import Response
 import stripe
 import uuid
 import requests
-from store.utils import generate_random_six_character_string
+from store.utils import generate_random_six_character_string, send_order_email
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -57,6 +57,9 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             # need to sound an alarm
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         serializer.save()
+
+        # send email
+        send_order_email(order_num, request.data.get('email'))
 
         # return order number
         return Response({"detail": order_num}, status=status.HTTP_200_OK)

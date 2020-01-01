@@ -26,6 +26,8 @@ SECRET_KEY = '3fra#tul5#+lmmpmu4c$m#_fenxbk^k-5!z5=ml))_rae7*o*o'
 DEBUG = True
 
 ALLOWED_HOSTS = ['store.danmallon.com']
+if os.environ.get('DEBUG') == '1':
+    ALLOWED_HOSTS += ['localhost']
 
 
 # Application definition
@@ -132,3 +134,11 @@ USE_TZ = True
 
 STATIC_URL = '/api-static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "api-static/")
+
+
+# Email
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

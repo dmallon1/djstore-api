@@ -1,4 +1,8 @@
 import random
+from django.core.mail import send_mail
+from store.serializers import ProductInstanceSerializer
+from store.models import Order
+from django.template.loader import render_to_string
 
 
 def generate_random_six_character_string():
@@ -68,3 +72,20 @@ num_to_char = {
     60:"Y",
     61:"Z",
 }
+
+
+def send_order_email(dj_order_id, to_email):
+    order = Order.objects.get(dj_order_id=dj_order_id)
+
+    product_serializer = ProductInstanceSerializer(order.product_instances, many=True)
+
+    data = {
+        "order_id": order.dj_order_id,
+        "product_instances": product_serializer.data,
+        "total": order.total,
+    }
+
+    msg_plain = render_to_string('store/email.txt', data)
+    msg_html = render_to_string('store/email.html', data)
+
+    send_mail('order', msg_plain, 'orders@store.danmallon.com', [to_email], html_message=msg_html)
