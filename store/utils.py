@@ -1,7 +1,7 @@
 import random
 from django.core.mail import send_mail
 from store.serializers import ProductInstanceSerializer
-from store.models import Order
+from store.models import Order, Product, ShirtSize
 from django.template.loader import render_to_string
 
 
@@ -79,10 +79,23 @@ def send_order_email(dj_order_id, to_email):
 
     product_serializer = ProductInstanceSerializer(order.product_instances, many=True)
 
+    info = []
+    for product_instance in order.product_instances.all():
+        stuff = {}
+        product = product_instance.product
+        size = product_instance.size
+
+        stuff['title'] = product.title
+        stuff['quantity'] = product_instance.quantity
+        stuff['size'] = size.size
+
+        info.append(stuff)
+
     data = {
         "order_id": order.dj_order_id,
         "product_instances": product_serializer.data,
         "total": order.total,
+        "product_instances": info,
     }
 
     msg_plain = render_to_string('store/email.txt', data)

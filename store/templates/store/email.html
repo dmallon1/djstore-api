@@ -1,7 +1,46 @@
-<div>
-    <h1>We have recieved your order.</h1>
-    <h3>order number: {{ order_id }}</h3>
-    <p>items: {{ product_instances }}</p>
-    <p>total: ${{ total|floatformat:2 }}</p>
-    <a href="http://store.danmallon.com/order-lookup">check order status</a>
-</div>
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  </head>
+  <body>
+    <div>
+        <h1>order @ djstore</h1>
+        <h3>order number: {{ order_id }}</h3>
+
+        <table style="margin-bottom: 1.5em; border: 1px solid black;">
+            <tbody>
+                {% for product in product_instances %}
+                    <tr>
+                        <td className="p-2">
+                            <div className="d-flex justify-content-between align-items-center">
+                                {{ product.title }}
+                            </div>
+                        </td>
+                        <td>
+                            <div className="d-flex justify-content-between">
+                                <div>{{ product.quantity }}x | {{ product.size }}</div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                <tr className="top-border">
+                    <td className="p-2">
+                        <div className="d-flex justify-content-between align-items-center">
+                            <div>total</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div className="font-weight-bold">${{ total|floatformat:2 }}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="http://store.danmallon.com/order-lookup">check order status</a>
+    </div>
+  </body>
+</html>
