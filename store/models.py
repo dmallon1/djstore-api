@@ -24,10 +24,11 @@ class ProductInstance(models.Model):
     product = models.ForeignKey(Product, related_name='product_instances', on_delete=models.PROTECT)
     size = models.CharField(max_length=4, choices=SIZE_CHOICES)
     sku = models.TextField(max_length=512)
-    quantity = models.PositiveIntegerField()
 
-    def __str__(self):
-        return "[" + str(self.quantity) + "] " + self.product.title + " | " + self.size
+
+class CartProductInstance(models.Model):
+    product_instance = models.ForeignKey(ProductInstance, on_delete=models.PROTECT)
+    quantity = models.PositiveIntegerField()
 
 
 class Order(models.Model):
@@ -47,7 +48,7 @@ class Order(models.Model):
     zip_code = models.CharField(max_length=10)
     card_token = models.CharField(max_length=256)
     captcha_token = models.CharField(max_length=512)
-    product_instances = models.ManyToManyField(ProductInstance)
+    cart_product_instances = models.ManyToManyField(CartProductInstance)
     total = models.FloatField()
     stripe_id = models.CharField(max_length=128, null=True, blank=True)
     gooten_id = models.CharField(max_length=128, null=True, blank=True)

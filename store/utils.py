@@ -77,23 +77,20 @@ num_to_char = {
 def send_order_email(dj_order_id, to_email):
     order = Order.objects.get(dj_order_id=dj_order_id)
 
-    product_serializer = ProductInstanceSerializer(order.product_instances, many=True)
-
     info = []
-    for product_instance in order.product_instances.all():
+    for cart_product_instance in order.cart_product_instances.all():
         stuff = {}
-        product = product_instance.product
-        size = product_instance.size
+        product = cart_product_instance.product_instance.product
+        size = cart_product_instance.product_instance.size
 
         stuff['title'] = product.title
-        stuff['quantity'] = product_instance.quantity
+        stuff['quantity'] = cart_product_instance.quantity
         stuff['size'] = size
 
         info.append(stuff)
 
     data = {
         "order_id": order.dj_order_id,
-        "product_instances": product_serializer.data,
         "total": order.total,
         "product_instances": info,
     }

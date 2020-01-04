@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status, mixins
 from store.models import Product, Order, ProductInstance
-from store.serializers import ProductSerializer, OrderSerializer, ProductInstanceSerializer
+from store.serializers import ProductSerializer, OrderSerializer, ProductInstanceSerializer, CartProductInstanceSerializer
 from rest_framework.response import Response
 import stripe
 import uuid
@@ -92,10 +92,12 @@ def create_gooten_order(data):
 
     # have to create items list to insert below
     items = []
-    for instance in data['product_instances']:
+    for instance in data['cart_product_instances']:
+        product_instance = ProductInstance.objects.get(id=instance.get('product_instance'))
+
         item = {
             "Quantity": instance['quantity'],
-            "SKU": instance['sku'],
+            "SKU": product_instance.sku,
             "ShipCarrierMethodId": 1,
         }
         items.append(item)
@@ -160,13 +162,13 @@ class OrderLookup(APIView):
         except Order.DoesNotExist:
             return Response({"detail": "not found"}, status=404)
 
-        product_serializer = ProductInstanceSerializer(order.product_instances, many=True)
+        cart_product_serializer = CartProductInstanceSerializer(order.cart_product_instances, many=True)
 
         data = {
             "order_id": order.dj_order_id,
             "status": order.status,
             "tracking_number": order.tracking_number,
-            "product_instances": product_serializer.data,
+            "cart_product_instances": cart_product_serializer.data,
             "total": order.total,
         }
 
