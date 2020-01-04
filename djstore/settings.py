@@ -23,10 +23,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '3fra#tul5#+lmmpmu4c$m#_fenxbk^k-5!z5=ml))_rae7*o*o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') == '1'
 
 ALLOWED_HOSTS = ['store.danmallon.com']
-if os.environ.get('DEBUG') == '1':
+if DEBUG:
     ALLOWED_HOSTS += ['localhost']
 
 
@@ -57,7 +57,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'djstore.urls'
 
-CORS_ORIGIN_ALLOW_ALL = True
+if DEBUG:
+    CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
 
 TEMPLATES = [
     {
