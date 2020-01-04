@@ -1,7 +1,7 @@
 import random
 from django.core.mail import send_mail
 from store.serializers import ProductInstanceSerializer
-from store.models import Order, Product, ShirtSize
+from store.models import Order, Product
 from django.template.loader import render_to_string
 
 
@@ -87,7 +87,7 @@ def send_order_email(dj_order_id, to_email):
 
         stuff['title'] = product.title
         stuff['quantity'] = product_instance.quantity
-        stuff['size'] = size.size
+        stuff['size'] = size
 
         info.append(stuff)
 

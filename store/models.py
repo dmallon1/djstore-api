@@ -1,34 +1,33 @@
 from django.db import models
 
 
-class ShirtSize(models.Model):
-    # s,m,l,xl,xxl
-    # could make this a proper choice field
-    size = models.CharField(max_length=3)
-
-    def __str__(self):
-        return self.size
-
-
 class Product(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=1024)
     price = models.PositiveIntegerField()
     picture_url = models.CharField(max_length=256)
-    available_sizes = models.ManyToManyField(ShirtSize)
 
     def __str__(self):
         return self.title
 
 
 class ProductInstance(models.Model):
+    SIZE_CHOICES = [
+        ('s', 'small'),
+        ('m', 'medium'),
+        ('l', 'large'),
+        ('xl', 'extra large'),
+        ('xxl', 'double extra large'),
+        ('xxxl', 'triple extra large'),
+    ]
+
     product = models.ForeignKey(Product, related_name='product_instances', on_delete=models.PROTECT)
-    size = models.ForeignKey(ShirtSize, on_delete=models.PROTECT)
+    size = models.CharField(max_length=4, choices=SIZE_CHOICES)
     sku = models.TextField(max_length=512)
     quantity = models.PositiveIntegerField()
 
     def __str__(self):
-        return "[" + str(self.quantity) + "] " + self.product.title + " | " + self.size.size
+        return "[" + str(self.quantity) + "] " + self.product.title + " | " + self.size
 
 
 class Order(models.Model):
