@@ -25,6 +25,9 @@ class ProductInstance(models.Model):
     size = models.CharField(max_length=4, choices=SIZE_CHOICES)
     sku = models.TextField(max_length=512)
 
+    class Meta:
+        unique_together = ('product', 'size')
+
 
 class CartProductInstance(models.Model):
     product_instance = models.ForeignKey(ProductInstance, on_delete=models.PROTECT)
