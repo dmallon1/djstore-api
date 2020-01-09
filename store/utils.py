@@ -98,4 +98,4 @@ def send_order_email(dj_order_id, to_email):
     msg_plain = render_to_string('store/email.txt', data)
     msg_html = render_to_string('store/email.html', data)
 
-    send_mail('order', msg_plain, 'orders@store.danmallon.com', [to_email], html_message=msg_html)
+    send_mail('order', msg_plain, 'orders@aubreyjobs.com', [to_email], html_message=msg_html)

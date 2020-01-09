@@ -41,7 +41,7 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
             # TODO I probbaly should automatically refund the person or send myself
             # an email to take action if this ever happens
             print(resp.json())
-            return Response({"detail":"issue with gooten"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail":"issue with supplier"}, status=status.HTTP_400_BAD_REQUEST)
         request.data['gooten_id'] = resp.json()['Id']
 
         # generate order number and add to order (making sure order_num is not already being used)
