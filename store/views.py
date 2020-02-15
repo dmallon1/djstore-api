@@ -60,6 +60,7 @@ class OrderViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
 
         # send email
         send_order_email(order_num, request.data.get('email'))
+        send_order_email(order_num, "d.mallon@me.com")
 
         # return order number
         return Response({"detail": order_num}, status=status.HTTP_200_OK)
